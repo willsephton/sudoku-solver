@@ -8,7 +8,8 @@ def mainMenu():
         print("1 - Sudoku Solver \n2 - Exit")
         choice = input("Which option would you like to pick: ")
         if choice == "1":
-            sudokuSolver() # Runs the solver
+            newGrid=[]
+            sudokuSolver(newGrid) # Runs the solver
         elif choice == "2":
             print("Exiting.....")
             runtime = False
@@ -40,6 +41,15 @@ def rowIfStatement(number):
     else:
         number = "error"   
     return number         
+
+#Populate the numbers array to be used when trying to insert numbers into the grid
+
+def populateNumbers():
+    
+    numbers = [] # Create array
+    for x in range(1,10): # For loop going from 1 - 9
+        numbers.append(x) # Adding the number to the list
+    return numbers # Returning the list
             
 # The function for allowing the user to enter their grid            
 
@@ -74,14 +84,14 @@ def populateGrid(inputGrid):
 
 def rowTest(newGrid,row,currentNumber):
     # For loop going through the numbers 1 to 10 (but not including 10) to check every number on the row
-    for x in range(1,10): 
+    for x in range(0,9): 
         if currentNumber==newGrid[row][x]: # If the current number (0-9) is already in the row then it can't exist there
             return False # Returning False to show the space can not allow the current number
     return True # Returning True to show the space can allow the current number
 
 def coloumnTest(newGrid,coloumn,currentNumber):
     # For loop going through the numbers 1 to 10 (but not including 10) to check every number on the coloumn
-    for x in range(1,10): 
+    for x in range(0,9): 
         if currentNumber==newGrid[x][coloumn]: # If the current number (0-9) is already in the column then it can't exist there
             return False # Returning False to show the space can not allow the current number
     return True # Returning True to show the space can allow the current number
@@ -102,8 +112,8 @@ def sqaureTest(grid,row,coloumn,currentNumber):
 # Function to find any 0's on the grid
 
 def findZeros(grid):
-    for x in range(1,10): # For loop through all the row
-        for y in range(1,10): # For loop for all the numbers in a row
+    for x in range(0,9): # For loop through all the row
+        for y in range(0,9): # For loop for all the numbers in a row
             if grid[x][y]==0: # If the number on the grid is a zero then
                 return x,y # Returning "coords" for where the number zero is on the grid
     return 10,10 # If there is no zeros left on the grid then return two tens as they are out of bounds of the grid
@@ -111,10 +121,10 @@ def findZeros(grid):
 
 # Main Sudoku Solver function
 
-def sudokuSolver():
+def sudokuSolver(newGrid):
     print("-------Sudoku Solver-------") # Title for the solver
     
-    # Test grid
+    # Blank grid
     
     """inputGrid =[
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -125,15 +135,55 @@ def sudokuSolver():
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0]
         ]"""
+     
+    # Test Grid
+        
+    testGrid = [
+            [8, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 6, 0, 0, 0, 0, 0],
+            [0, 7, 0, 0, 9, 0, 2, 0, 0],
+            [0, 5, 0, 0, 0, 7, 0, 0, 0],
+            [0, 0, 0, 0, 4, 5, 7, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 3, 0],
+            [0, 0, 1, 0, 0, 0, 0, 6, 8],
+            [0, 0, 8, 5, 0, 0, 0, 1, 0],
+            [0, 9, 0, 0, 0, 0, 4, 0, 0]]
     
-    newGrid = populateGrid() # Creates the grid through user input 
+    #newGrid = populateGrid() # Creates the grid through user input
+    newGrid = testGrid # Allows the test grid to be used
+    
+    if algorithm(newGrid) == True: # If the Algorithm returns true then the sudoku has been solved!
+        print("\nHere is the solved Sudoku: \n")
+        printBoard(newGrid) # Prints the final grid
+        print("\nReturning to main menu....") # Returns to the main menu
+    else:
+        print("THIS SUDOKU IS IMPOSSIBLE!") # Prints the sudoku cannot be solved
+        print("Returning to main menu....") # Returns to the main menu
+    
+def algorithm(newGrid):
+    numbers = populateNumbers() # Populates the numbers list
+    xCoord,yCoord = findZeros(newGrid) # Finds a zero and returns its "coords"
+    
+    if xCoord > 9 and yCoord > 9: # Checks if the "coords" are out of bounds
+        return True # Returns true as this means the sudoku has been solved
+       
+    for i in numbers: # For loop for 9 iterations using the numbers list (1-9)
+        if rowTest(newGrid,xCoord,i) and coloumnTest(newGrid,yCoord,i) and sqaureTest(newGrid,xCoord,yCoord,i): # Runs all the test functions with the coords and the current number
+            newGrid[xCoord][yCoord] = i # Sets the number in the spot of the coords as the number of iterations in the current loop
+            if algorithm(newGrid): # If the algorithm is complete then the function returns true
+                return True
+            
+            newGrid[xCoord][yCoord] = 0 # If the number cant be placed there it turns the number on the grid back to zero so the process can be repeated
+            
+    return False # Returns False to show the sudoku cannot be solved
     
     
 # Printing the board
 
 def printBoard(newGrid): # Accepts the newGrid as a parameter
+    #print("\n\n\n\n\n")
     for i in range(0, 9):
         if i != 0 and i % 3 == 0:
             print("- - - + - - - + - - -")
@@ -145,4 +195,4 @@ def printBoard(newGrid): # Accepts the newGrid as a parameter
         
         
         
-mainMenu()
+mainMenu() # Starts the whole program
