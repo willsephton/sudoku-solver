@@ -85,9 +85,31 @@ def coloumnTest(newGrid,coloumn,currentNumber):
         if currentNumber==newGrid[x][coloumn]: # If the current number (0-9) is already in the column then it can't exist there
             return False # Returning False to show the space can not allow the current number
     return True # Returning True to show the space can allow the current number
+    
+def sqaureTest(grid,row,coloumn,currentNumber):
+    #Finding the center
+    row=(row//3)*3+1
+    coloumn=(coloumn//3)*3+1
+    # Defining the numbers used in the for loops to check every number in the cell
+    movingNumbers = [-1,0,1]
+    # For loops going through each number in the square 
+    for x in movingNumbers:
+        for y in movingNumbers:
+            if grid[x+row][y+coloumn] == currentNumber: # If the current number (0-9) is already in the box then it can't exist there
+                return False # Returning False to show the space can not allow the current number
+    return True # Returning True to show the space can allow the current number
 
-def squareTest():
-    print("Placeholder")
+# Function to find any 0's on the grid
+
+def findZeros(grid):
+    for x in range(1,10): # For loop through all the row
+        for y in range(1,10): # For loop for all the numbers in a row
+            if grid[x][y]==0: # If the number on the grid is a zero then
+                return x,y # Returning "coords" for where the number zero is on the grid
+    return 10,10 # If there is no zeros left on the grid then return two tens as they are out of bounds of the grid
+    
+
+# Main Sudoku Solver function
 
 def sudokuSolver():
     print("-------Sudoku Solver-------") # Title for the solver
