@@ -70,6 +70,13 @@ def populateGrid(inputGrid):
     printBoard(grid) # Displays the users inputted grid
     return grid # Returns the grid
 
+def rowCheck(newGrid,row,currentNumber):
+    # For loop going through the numbers 1 to 10 (but not including 10) to check every number on the row
+    for x in range(1,10): 
+        if currentNumber==newGrid[row][x]: # If the current number (0-9) is already in the row then it can't exist there
+            return False # Returning False to show the space can not allow the current number
+    return True # Returning True to show the space can allow the current number
+
 def sudokuSolver():
     print("-------Sudoku Solver-------") # Title for the solver
     
